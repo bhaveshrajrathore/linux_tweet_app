@@ -1,16 +1,39 @@
-pipeline {
-    agent {label 'TEST'}
-    stages {
-        stage('Checkout') { 
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/rajbhavesh/linux_tweet_app.git']]])
-            }
+pipeline{
+     environment {
+     registry = "rajbhavesh/demo"
+     registryCredential = "Docker"
+     dockerImage = "tweetappV1"
+  }
+   agent { label 'TEST' }
+
+    stages{
+        stage ('Checkout'){
+			steps{
+			echo "Code Checkout"
+			checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/rajbhavesh/linux_tweet_app.git']]])
+			}
+		}
+	    stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
         }
-        stage('Deploy') { 
-            steps {
-                sh label: '', script: 'ansible-playbook -i hosts.ini site.yaml'
-                sh label: '', script: 'kubectl taint nodes ip-172-31-0-51 node-role.kubernetes.io/master-'
-            }
-        }
+      }
     }
+    stage('Push image To Registry') {
+      steps{
+         script {
+            docker.withRegistry( '', registryCredential ) {
+	    dockerImage.push("tweetappV1${env.BUILD_NUMBER}")
+            //dockerImage.push("tweetappV1")
+          }
+        }
+      }
+    }
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $registry:$BUILD_NUMBER"
+      }
+    }
+  }
 }
