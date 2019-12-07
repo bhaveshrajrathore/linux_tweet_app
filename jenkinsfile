@@ -17,6 +17,8 @@ pipeline {
 					
                        sh label: '', script: 'sudo docker push rajbhaveshraj/devopstest:tweetappV1'                      
 			}
+			}
+			}
             	
 		stage('Deploy on K8s') {
 			steps {
@@ -28,8 +30,5 @@ pipeline {
 	    }
 	    
         }
-		
-    }
-}
 
 
