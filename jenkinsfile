@@ -8,14 +8,14 @@ pipeline {
         }
         stage('Docker Build') { 
             steps {
-                sh label: '', script: 'docker build . -t rajbhaveshraj/devopstest:tweetappV1'
+                sh label: '', script: 'sudo docker build . -t rajbhaveshraj/devopstest:tweetappV1'
             }
         }
 		 stage('Docker Push') { 
                   steps {
 			withDockerRegistry(credentialsId: 'dockerhub', url: '') {
 					
-                       sh label: '', script: 'docker push rajbhaveshraj/devopstest:tweetappV1'                      
+                       sh label: '', script: 'sudo docker push rajbhaveshraj/devopstest:tweetappV1'                      
 			}
             }
         }
