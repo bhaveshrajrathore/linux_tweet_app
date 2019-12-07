@@ -17,7 +17,16 @@ pipeline {
 					
                        sh label: '', script: 'sudo docker push rajbhaveshraj/devopstest:tweetappV1'                      
 			}
-            }
+            	
+		stage('Deploy on K8s') {
+			steps {
+		kubernetesDeploy configs: '*.yaml', kubeConfig: [path: ''], kubeconfigId: 'KUBERNETES_CUBE_CONFIG', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+	    	}
+	    
+	    }
+	    
+	    }
+	    
         }
 		
     }
