@@ -13,7 +13,7 @@ pipeline {
         }
 		 stage('Docker Push') { 
                   steps {
-			withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1') {
+			withDockerRegistry(credentialsId: 'dockerhub', url: '') {
 					
                        sh label: '', script: 'sudo docker push rajbhaveshraj/devopstest:tweetappV1'                      
 			}
